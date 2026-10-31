@@ -29,20 +29,68 @@ if (
 
 // Demo products. Replace these with actual owner-approved catalogue data.
 const products = [
-  {id:1,name:"Ruby Kanchipuram Saree",category:"Sarees",price:5490,image:"images/saree-01.jpg"},
-  {id:2,name:"Emerald Soft Silk Saree",category:"Sarees",price:3890,image:"images/saree-02.jpg"},
-  {id:3,name:"Blush Pink Organza Saree",category:"Sarees",price:2790,image:"images/saree-03.jpg"},
-  {id:4,name:"Royal Blue Tussar Saree",category:"Sarees",price:4290,image:"images/saree-04.jpg"},
-  {id:5,name:"Golden Festive Saree",category:"Sarees",price:7290,image:"images/saree-05.jpg"},
-  {id:6,name:"Printed Everyday Kurti",category:"Kurtis & Kurtas",price:1290,image:"images/saree-06.jpg"},
-  {id:7,name:"Designer Party Lehenga",category:"Lehengas",price:8990,image:"images/saree-07.jpg"},
-  {id:8,name:"Classic Salwar Suit",category:"Salwar Suits",price:2490,image:"images/saree-08.jpg"},
-  {id:9,name:"Floral Dress Material",category:"Dress Materials",price:1590,image:"images/saree-09.jpg"},
-  {id:10,name:"Evening Party Gown",category:"Gowns & Party Wear",price:4990,image:"images/saree-10.jpg"},
-  {id:11,name:"Women's Ethnic Set",category:"Women's Wear",price:3290,image:"images/saree-11.jpg"},
-  {id:12,name:"Men's Ethnic Kurta",category:"Men's Wear",price:2190,image:"images/saree-12.jpg"},
-  {id:13,name:"Kids Festive Wear",category:"Kids Wear",price:1890,image:"images/saree-01.jpg"},
-  {id:14,name:"Designer Blouse",category:"Blouses",price:990,image:"images/saree-02.jpg"}
+ // Products and categories will load from Supabase
+let products = [];
+let categories = [];
+
+async function loadCatalog() {
+  if (!supabaseClient) {
+    console.error("Supabase is not configured.");
+    return;
+  }
+
+  try {
+    // Load active main categories
+    const { data: categoryData, error: categoryError } =
+      await supabaseClient
+        .from("categories")
+        .select("id, name, slug, parent_id")
+        .eq("is_active", true)
+        .is("parent_id", null)
+        .order("name");
+
+    if (categoryError) throw categoryError;
+
+    categories = categoryData || [];
+
+    // Load active products and their category names
+    const { data: productData, error: productError } =
+      await supabaseClient
+        .from("products")
+        .select("id, name, description, category_id, price, image_url, is_active, is_demo, created_at, categories(name, slug)")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false });
+
+    if (productError) throw productError;
+
+    products = (productData || []).map(product => ({
+      ...product,
+      category: product.categories?.name || "Uncategorized",
+      image: product.image_url || ""
+    }));
+
+    renderCategoryFilters();
+    renderProducts();
+
+  } catch (error) {
+    console.error("Catalog loading failed:", error);
+    $("productGrid").innerHTML =
+      "<p>Unable to load products. Please try again later.</p>";
+  }
+}
+
+function renderCategoryFilters() {
+  $("categoryFilters").innerHTML = categories.map(category => `
+    <label>
+      <input type="checkbox" name="categoryFilter"
+        value="${category.name}">
+      ${category.name}
+    </label>
+  `).join("");
+
+  document.querySelectorAll('input[name="categoryFilter"]')
+    .forEach(input => input.addEventListener("change", renderProducts));
+}
 ];
 
 const categories = [
