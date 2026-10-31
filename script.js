@@ -1,30 +1,69 @@
-// Siri Silks demo storefront. Replace sample product data and WhatsApp number only after owner approval.
-const WHATSAPP_NUMBER = "91XXXXXXXXXX"; // Country code + number, digits only. Demo placeholder.
+// -----------------------------------------
+// SIRI SILKS - FRONTEND + SUPABASE AUTH
+// -----------------------------------------
 
+// Add Supabase project details here.
+// Use the Project URL and publishable/anon key only.
+// NEVER use the service_role or secret key in this file.
+
+const SUPABASE_URL = "https://ahupaxdwlxhjgvogfbcd.supabase.co/rest/v1/";
+const SUPABASE_ANON_KEY = "sb_publishable_uBmd8g2nJ1QZH3vTPAUfag_zeXb5O-u";
+
+// Add only the Siri Silks owner-approved WhatsApp number.
+// Format: +91 followed by 10 digits.
+const WHATSAPP_NUMBER = "+917569221743";
+
+let supabaseClient = null;
+
+if (
+  window.supabase &&
+  SUPABASE_URL.startsWith("https://") &&
+  !SUPABASE_URL.includes("YOUR_") &&
+  !SUPABASE_ANON_KEY.includes("YOUR_")
+) {
+  supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+}
+
+// Demo products. Replace these with actual owner-approved catalogue data.
 const products = [
-  {id:1,name:"Ruby Temple Kanchipuram",category:"Kanchipuram Silk",colour:"Red",price:5490,badge:"Festive pick",image:"images/saree-01.jpg",description:"Traditional-inspired silk saree for celebrations."},
-  {id:2,name:"Emerald Zari Soft Silk",category:"Soft Silk",colour:"Green",price:3890,badge:"Popular",image:"images/saree-02.jpg",description:"A graceful green saree with a classic look."},
-  {id:3,name:"Blush Pink Organza",category:"Organza",colour:"Pink",price:2790,badge:"Lightweight",image:"images/saree-03.jpg",description:"An airy organza look for daytime occasions."},
-  {id:4,name:"Royal Blue Tussar",category:"Tussar",colour:"Blue",price:4290,badge:"New edit",image:"images/saree-04.jpg",description:"Textured Tussar-inspired occasion wear."},
-  {id:5,name:"Golden Hour Silk",category:"Kanchipuram Silk",colour:"Gold",price:7290,badge:"Statement",image:"images/saree-05.jpg",description:"A rich gold-toned traditional look."},
-  {id:6,name:"Rose Garden Soft Silk",category:"Soft Silk",colour:"Pink",price:3490,badge:"Elegant",image:"images/saree-06.jpg",description:"A soft pink style for family celebrations."},
-  {id:7,name:"Classic Maroon Festive",category:"Festive",colour:"Red",price:6190,badge:"Occasion wear",image:"images/saree-07.jpg",description:"A festive colour for special moments."},
-  {id:8,name:"Ivory Gold Organza",category:"Organza",colour:"Gold",price:3190,badge:"Lightweight",image:"images/saree-08.jpg",description:"An understated ivory and gold look."},
-  {id:9,name:"Peacock Blue Silk",category:"Kanchipuram Silk",colour:"Blue",price:8490,badge:"Classic",image:"images/saree-09.jpg",description:"A rich blue silk-inspired statement saree."},
-  {id:10,name:"Leaf Green Tussar",category:"Tussar",colour:"Green",price:2990,badge:"Natural look",image:"images/saree-10.jpg",description:"A textured green style for elegant occasions."},
-  {id:11,name:"Celebration Pink Silk",category:"Festive",colour:"Pink",price:5790,badge:"Festive pick",image:"images/saree-11.jpg",description:"A bright celebratory saree concept."},
-  {id:12,name:"Midnight Blue Soft Silk",category:"Soft Silk",colour:"Blue",price:4590,badge:"Timeless",image:"images/saree-12.jpg",description:"A versatile blue saree for evening events."}
+  {id:1,name:"Ruby Kanchipuram Saree",category:"Sarees",price:5490,image:"images/saree-01.jpg"},
+  {id:2,name:"Emerald Soft Silk Saree",category:"Sarees",price:3890,image:"images/saree-02.jpg"},
+  {id:3,name:"Blush Pink Organza Saree",category:"Sarees",price:2790,image:"images/saree-03.jpg"},
+  {id:4,name:"Royal Blue Tussar Saree",category:"Sarees",price:4290,image:"images/saree-04.jpg"},
+  {id:5,name:"Golden Festive Saree",category:"Sarees",price:7290,image:"images/saree-05.jpg"},
+  {id:6,name:"Printed Everyday Kurti",category:"Kurtis & Kurtas",price:1290,image:"images/saree-06.jpg"},
+  {id:7,name:"Designer Party Lehenga",category:"Lehengas",price:8990,image:"images/saree-07.jpg"},
+  {id:8,name:"Classic Salwar Suit",category:"Salwar Suits",price:2490,image:"images/saree-08.jpg"},
+  {id:9,name:"Floral Dress Material",category:"Dress Materials",price:1590,image:"images/saree-09.jpg"},
+  {id:10,name:"Evening Party Gown",category:"Gowns & Party Wear",price:4990,image:"images/saree-10.jpg"},
+  {id:11,name:"Women's Ethnic Set",category:"Women's Wear",price:3290,image:"images/saree-11.jpg"},
+  {id:12,name:"Men's Ethnic Kurta",category:"Men's Wear",price:2190,image:"images/saree-12.jpg"},
+  {id:13,name:"Kids Festive Wear",category:"Kids Wear",price:1890,image:"images/saree-01.jpg"},
+  {id:14,name:"Designer Blouse",category:"Blouses",price:990,image:"images/saree-02.jpg"}
+];
+
+const categories = [
+  "Sarees",
+  "Kurtis & Kurtas",
+  "Lehengas",
+  "Salwar Suits",
+  "Dress Materials",
+  "Gowns & Party Wear",
+  "Women's Wear",
+  "Men's Wear",
+  "Kids Wear",
+  "Blouses"
 ];
 
 let activeCategory = "All";
 let cart = [];
 let wishlist = new Set();
+let authMode = "signup";
 
-const productGrid = document.getElementById("productGrid");
-const searchInput = document.getElementById("searchInput");
-const categoryFilter = document.getElementById("categoryFilter");
-const resultCount = document.getElementById("resultCount");
-const emptyState = document.getElementById("emptyState");
+const $ = id => document.getElementById(id);
 
 function money(value) {
   return new Intl.NumberFormat("en-IN", {
@@ -34,134 +73,102 @@ function money(value) {
   }).format(value);
 }
 
-function whatsappLink(message) {
+// WhatsApp
+function openWhatsApp(message) {
   const number = WHATSAPP_NUMBER.replace(/\D/g, "");
-  if (!number || number.includes("+917569221743")) return "#";
-  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+
+  if (number.length !== 12 || !number.startsWith("91")) {
+    alert("WhatsApp demo number is not configured. Add the owner-approved +91 number in script.js.");
+    return;
+  }
+
+  const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank", "noopener");
 }
 
-function productCard(product) {
-  const wished = wishlist.has(product.id);
+["topWhatsapp", "floatingWhatsapp", "mainWhatsapp"].forEach(id => {
+  $(id).addEventListener("click", () => {
+    openWhatsApp("Hello Siri Silks, I would like to know about your clothing collections.");
+  });
+});
 
-  return `
+// Category filter controls
+$("categoryFilters").innerHTML = categories.map(category => `
+  <label>
+    <input type="checkbox" name="categoryFilter" value="${category}">
+    ${category}
+  </label>
+`).join("");
+
+function getFilteredProducts() {
+  const query = $("searchInput").value.trim().toLowerCase();
+
+  const selectedCategories = [
+    ...document.querySelectorAll('input[name="categoryFilter"]:checked')
+  ].map(input => input.value);
+
+  const price = document.querySelector('input[name="price"]:checked')?.value || "all";
+
+  let result = products.filter(product => {
+    const searchMatch =
+      !query ||
+      `${product.name} ${product.category}`.toLowerCase().includes(query);
+
+    const categoryMatch =
+      (activeCategory === "All" || product.category === activeCategory) &&
+      (!selectedCategories.length || selectedCategories.includes(product.category));
+
+    const priceMatch =
+      price === "all" ||
+      (price === "under3000" && product.price < 3000) ||
+      (price === "3000to6000" && product.price >= 3000 && product.price <= 6000) ||
+      (price === "above6000" && product.price > 6000);
+
+    return searchMatch && categoryMatch && priceMatch;
+  });
+
+  const sort = $("sortSelect").value;
+
+  if (sort === "price-low") result.sort((a,b) => a.price - b.price);
+  if (sort === "price-high") result.sort((a,b) => b.price - a.price);
+  if (sort === "name") result.sort((a,b) => a.name.localeCompare(b.name));
+
+  return result;
+}
+
+function renderProducts() {
+  const result = getFilteredProducts();
+
+  $("productGrid").innerHTML = result.map(product => `
     <article class="product-card">
       <div class="product-image">
         <img src="${product.image}" alt="${product.name}" loading="lazy"
-          onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<div class=&quot;product-placeholder&quot;>SIRI SILKS<small>Add ${product.image}</small></div>')">
-
-        <span class="product-badge">${product.badge}</span>
-
-        <button class="wishlist-button ${wished ? "active" : ""}"
-          data-wishlist="${product.id}"
-          aria-label="Add ${product.name} to wishlist">
-          ${wished ? "♥" : "♡"}
+          onerror="this.style.display='none'">
+        <button class="wishlist-button ${wishlist.has(product.id) ? "active" : ""}"
+          data-wish="${product.id}" aria-label="Add to wishlist">
+          ${wishlist.has(product.id) ? "♥" : "♡"}
         </button>
       </div>
-
       <div class="product-info">
-        <span class="product-category">${product.category}</span>
+        <small>${product.category}</small>
         <h3>${product.name}</h3>
-        <p class="product-colour">Colour: ${product.colour}</p>
         <p class="product-price">${money(product.price)} <small>Demo price</small></p>
-
         <div class="product-actions">
           <button class="add-button" data-add="${product.id}">Add to bag</button>
           <button class="enquire-button" data-enquire="${product.id}">Enquire</button>
         </div>
       </div>
-    </article>`;
-}
+    </article>
+  `).join("");
 
-function getFilteredProducts() {
-  const query = searchInput.value.trim().toLowerCase();
+  $("resultCount").textContent =
+    `Showing ${result.length} of ${products.length} demo products`;
 
-  const categories = [
-    ...document.querySelectorAll('input[name="category"]:checked')
-  ].map(el => el.value);
-
-  const colours = [
-    ...document.querySelectorAll('input[name="colour"]:checked')
-  ].map(el => el.value);
-
-  const price =
-    document.querySelector('input[name="price"]:checked')?.value || "all";
-
-  let filtered = products.filter(product => {
-    const matchesSearch =
-      !query ||
-      [
-        product.name,
-        product.category,
-        product.colour,
-        product.description
-      ].join(" ").toLowerCase().includes(query);
-
-    const matchesCategory =
-      (activeCategory === "All" || product.category === activeCategory) &&
-      (!categories.length || categories.includes(product.category));
-
-    const matchesColour =
-      !colours.length || colours.includes(product.colour);
-
-    const matchesPrice =
-      price === "all" ||
-      (price === "under3000" && product.price < 3000) ||
-      (price === "3000to6000" &&
-        product.price >= 3000 && product.price <= 6000) ||
-      (price === "above6000" && product.price > 6000);
-
-    return matchesSearch && matchesCategory && matchesColour && matchesPrice;
-  });
-
-  const sort = document.getElementById("sortSelect").value;
-
-  if (sort === "price-low")
-    filtered.sort((a, b) => a.price - b.price);
-
-  if (sort === "price-high")
-    filtered.sort((a, b) => b.price - a.price);
-
-  if (sort === "name")
-    filtered.sort((a, b) => a.name.localeCompare(b.name));
-
-  return filtered;
-}
-
-function renderProducts() {
-  const filtered = getFilteredProducts();
-
-  productGrid.innerHTML = filtered.map(productCard).join("");
-
-  resultCount.textContent =
-    `Showing ${filtered.length} of ${products.length} demo products`;
-
-  emptyState.hidden = filtered.length !== 0;
-}
-
-function clearFilters() {
-  searchInput.value = "";
-
-  document
-    .querySelectorAll('input[name="category"], input[name="colour"]')
-    .forEach(el => el.checked = false);
-
-  document.querySelector('input[name="price"][value="all"]').checked = true;
-
-  document.getElementById("sortSelect").value = "featured";
-
-  activeCategory = "All";
-  categoryFilter.value = "All";
-
-  document.querySelectorAll(".category-tile").forEach(tile => {
-    tile.classList.toggle("active", tile.dataset.category === "All");
-  });
-
-  renderProducts();
+  $("emptyState").hidden = result.length !== 0;
 }
 
 function setCategory(category) {
   activeCategory = category;
-  categoryFilter.value = category;
 
   document.querySelectorAll(".category-tile").forEach(tile => {
     tile.classList.toggle("active", tile.dataset.category === category);
@@ -169,200 +176,284 @@ function setCategory(category) {
 
   renderProducts();
 
-  document.getElementById("productArea").scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
+  $("productArea").scrollIntoView({behavior:"smooth"});
 }
 
-function openWhatsApp(message) {
-  const url = whatsappLink(message);
-
-  if (url === "#") {
-    alert(
-      "Demo WhatsApp number not configured. Replace WHATSAPP_NUMBER in script.js with an owner-approved number."
-    );
-    return;
-  }
-
-  window.open(url, "_blank", "noopener");
-}
-
-function renderCart() {
-  document.getElementById("cartCount").textContent = cart.length;
-
-  const cartItems = document.getElementById("cartItems");
-
-  if (!cart.length) {
-    cartItems.innerHTML = '<p class="cart-empty">Your bag is empty.</p>';
-  } else {
-    cartItems.innerHTML = cart.map((item, index) => `
-      <div class="cart-row">
-        <img class="cart-thumb" src="${item.image}" alt=""
-          onerror="this.style.visibility='hidden'">
-
-        <div>
-          <h4>${item.name}</h4>
-          <p>${money(item.price)} · Demo price</p>
-        </div>
-
-        <button class="remove-item" data-remove="${index}"
-          aria-label="Remove ${item.name}">
-          Remove
-        </button>
-      </div>
-    `).join("");
-  }
-
-  document.getElementById("cartTotal").textContent =
-    money(cart.reduce((sum, item) => sum + item.price, 0));
-}
-
-function toggleCart(open) {
-  document.getElementById("cartDrawer").classList.toggle("open", open);
-
-  document.getElementById("drawerBackdrop").classList.toggle("open", open);
-
-  document.getElementById("cartDrawer").setAttribute(
-    "aria-hidden",
-    String(!open)
-  );
-}
-
-// Search
-document.getElementById("searchForm").addEventListener("submit", event => {
-  event.preventDefault();
-  renderProducts();
-
-  document.getElementById("productArea").scrollIntoView({
-    behavior: "smooth"
-  });
-});
-
-searchInput.addEventListener("input", renderProducts);
-
-document.getElementById("sortSelect")
-  .addEventListener("change", renderProducts);
-
-// Filters
-document
-  .querySelectorAll('input[name="category"],input[name="colour"],input[name="price"]')
-  .forEach(el => el.addEventListener("change", renderProducts));
-
-// Category tiles
-document.getElementById("categoryTiles").addEventListener("click", event => {
+$("categoryTiles").addEventListener("click", event => {
   const tile = event.target.closest("[data-category]");
-
   if (tile) setCategory(tile.dataset.category);
 });
 
-document.querySelectorAll("[data-nav-category]").forEach(link => {
-  link.addEventListener("click", () => {
-    setCategory(link.dataset.navCategory);
-  });
-});
+$("productGrid").addEventListener("click", event => {
+  const addButton = event.target.closest("[data-add]");
+  const wishButton = event.target.closest("[data-wish]");
+  const enquireButton = event.target.closest("[data-enquire]");
 
-document.getElementById("clearFilters").addEventListener("click", clearFilters);
-document.getElementById("emptyClear").addEventListener("click", clearFilters);
-
-// Product actions
-productGrid.addEventListener("click", event => {
-  const add = event.target.closest("[data-add]");
-  const enquire = event.target.closest("[data-enquire]");
-  const wish = event.target.closest("[data-wishlist]");
-
-  if (add) {
-    const product = products.find(
-      p => p.id === Number(add.dataset.add)
-    );
-
+  if (addButton) {
+    const product = products.find(p => p.id === Number(addButton.dataset.add));
     cart.push(product);
     renderCart();
-    toggleCart(true);
+    $("cartDrawer").classList.add("open");
+    $("drawerBackdrop").classList.add("open");
   }
 
-  if (enquire) {
-    const product = products.find(
-      p => p.id === Number(enquire.dataset.enquire)
-    );
-
-    openWhatsApp(
-      `Hello Siri Silks, I would like to enquire about ${product.name} (${product.category}). Please share actual price and availability.`
-    );
-  }
-
-  if (wish) {
-    const id = Number(wish.dataset.wishlist);
-
+  if (wishButton) {
+    const id = Number(wishButton.dataset.wish);
     wishlist.has(id) ? wishlist.delete(id) : wishlist.add(id);
-
     renderProducts();
   }
+
+  if (enquireButton) {
+    const product = products.find(p => p.id === Number(enquireButton.dataset.enquire));
+    openWhatsApp(`Hello Siri Silks, I would like to enquire about ${product.name}. Please confirm the actual price and availability.`);
+  }
 });
 
-// Wishlist
-document.getElementById("wishlistToggle").addEventListener("click", () => {
+// Wishlist modal
+$("wishlistToggle").addEventListener("click", () => {
   const saved = products.filter(p => wishlist.has(p.id));
 
-  if (!saved.length) {
-    alert("Your wishlist is empty. Tap the heart on a product to save it.");
-    return;
-  }
+  $("wishlistItems").innerHTML = saved.length
+    ? saved.map(p => `<p>${p.name} — ${money(p.price)}</p>`).join("")
+    : "<p>Your wishlist is empty. Tap the heart on a product to save it.</p>";
 
-  alert("Wishlist: " + saved.map(p => p.name).join(", "));
+  $("wishlistModal").classList.add("open");
 });
 
-// Cart controls
-document.getElementById("cartToggle").addEventListener("click", () => {
-  toggleCart(true);
+$("closeWishlist").addEventListener("click", () => {
+  $("wishlistModal").classList.remove("open");
 });
 
-document.getElementById("closeCart").addEventListener("click", () => {
-  toggleCart(false);
+// Cart
+function renderCart() {
+  $("cartCount").textContent = cart.length;
+
+  $("cartItems").innerHTML = cart.length
+    ? cart.map((p,index) => `
+      <div class="cart-row">
+        <span>${p.name}<br>${money(p.price)}</span>
+        <button class="remove-item" data-remove="${index}">Remove</button>
+      </div>
+    `).join("")
+    : "<p>Your bag is empty.</p>";
+
+  $("cartTotal").textContent = money(cart.reduce((sum,p) => sum + p.price, 0));
+}
+
+$("cartItems").addEventListener("click", event => {
+  const button = event.target.closest("[data-remove]");
+  if (!button) return;
+
+  cart.splice(Number(button.dataset.remove), 1);
+  renderCart();
 });
 
-document.getElementById("drawerBackdrop").addEventListener("click", () => {
-  toggleCart(false);
+function closeCart() {
+  $("cartDrawer").classList.remove("open");
+  $("drawerBackdrop").classList.remove("open");
+}
+
+$("cartToggle").addEventListener("click", () => {
+  $("cartDrawer").classList.add("open");
+  $("drawerBackdrop").classList.add("open");
 });
 
-document.getElementById("cartItems").addEventListener("click", event => {
-  const remove = event.target.closest("[data-remove]");
+$("closeCart").addEventListener("click", closeCart);
+$("drawerBackdrop").addEventListener("click", closeCart);
 
-  if (remove) {
-    cart.splice(Number(remove.dataset.remove), 1);
-    renderCart();
-  }
-});
-
-// WhatsApp order enquiry
-document.getElementById("whatsappOrder").addEventListener("click", () => {
+$("whatsappOrder").addEventListener("click", () => {
   if (!cart.length) {
     alert("Your bag is empty.");
     return;
   }
 
-  const lines = cart.map(item =>
-    `- ${item.name} (${money(item.price)} demo price)`
-  );
-
-  openWhatsApp(
-    "Hello Siri Silks, I would like to enquire about these items:\n" +
-    lines.join("\n") +
-    "\nPlease confirm actual prices and availability."
-  );
+  const lines = cart.map(p => `${p.name} - ${money(p.price)}`).join("\n");
+  openWhatsApp(`Hello Siri Silks, I want to enquire about:\n${lines}\nPlease confirm availability and final prices.`);
 });
 
-document.getElementById("mainWhatsapp").addEventListener("click", event => {
+// Search and filters
+$("searchForm").addEventListener("submit", event => {
+  event.preventDefault();
+  renderProducts();
+});
+
+$("searchInput").addEventListener("input", renderProducts);
+$("sortSelect").addEventListener("change", renderProducts);
+
+document.querySelectorAll('input[name="categoryFilter"],input[name="price"]')
+  .forEach(input => input.addEventListener("change", renderProducts));
+
+function clearFilters() {
+  $("searchInput").value = "";
+  document.querySelectorAll('input[name="categoryFilter"]').forEach(i => i.checked = false);
+  document.querySelector('input[name="price"][value="all"]').checked = true;
+  $("sortSelect").value = "featured";
+  setCategory("All");
+}
+
+$("clearFilters").addEventListener("click", clearFilters);
+$("emptyClear").addEventListener("click", clearFilters);
+
+// -----------------------------------------
+// SUPABASE ACCOUNT AUTHENTICATION
+// -----------------------------------------
+
+function showAccount() {
+  $("accountModal").classList.add("open");
+  $("authMessage").textContent = "";
+  updateAuthUI();
+}
+
+$("accountToggle").addEventListener("click", showAccount);
+
+$("closeAccount").addEventListener("click", () => {
+  $("accountModal").classList.remove("open");
+});
+
+function setAuthMode(mode) {
+  authMode = mode;
+
+  const signup = mode === "signup";
+
+  $("accountTitle").textContent = signup ? "Create your account" : "Welcome back";
+  $("accountSubtitle").textContent = signup
+    ? "Join Siri Silks for a personalised shopping experience."
+    : "Login to your Siri Silks account.";
+
+  $("nameLabel").hidden = !signup;
+  $("authName").hidden = !signup;
+  $("authName").required = signup;
+
+  $("authSubmit").textContent = signup ? "Create account" : "Login";
+
+  $("switchAuth").textContent = signup
+    ? "Already have an account? Login"
+    : "New customer? Create account";
+
+  $("forgotPassword").hidden = signup;
+  $("authMessage").textContent = "";
+}
+
+$("switchAuth").addEventListener("click", () => {
+  setAuthMode(authMode === "signup" ? "login" : "signup");
+});
+
+async function updateAuthUI() {
+  if (!supabaseClient) {
+    $("logoutButton").hidden = true;
+    return;
+  }
+
+  const {data:{session}} = await supabaseClient.auth.getSession();
+
+  if (session) {
+    $("accountTitle").textContent = "Your account";
+    $("accountSubtitle").textContent = `Logged in as ${session.user.email}`;
+    $("authForm").hidden = true;
+    $("switchAuth").hidden = true;
+    $("forgotPassword").hidden = true;
+    $("logoutButton").hidden = false;
+  } else {
+    $("authForm").hidden = false;
+    $("switchAuth").hidden = false;
+    $("logoutButton").hidden = true;
+    setAuthMode("signup");
+  }
+}
+
+$("authForm").addEventListener("submit", async event => {
   event.preventDefault();
 
-  openWhatsApp(
-    "Hello Siri Silks, I would like to know more about your saree collections."
-  );
+  if (!supabaseClient) {
+    $("authMessage").textContent =
+      "Supabase is not configured. Add your Supabase project URL and publishable key in script.js.";
+    return;
+  }
+
+  const email = $("authEmail").value.trim();
+  const password = $("authPassword").value;
+  const name = $("authName").value.trim();
+
+  $("authSubmit").disabled = true;
+  $("authMessage").textContent = "Please wait...";
+
+  try {
+    let result;
+
+    if (authMode === "signup") {
+      result = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: name }
+        }
+      });
+    } else {
+      result = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+    }
+
+    if (result.error) throw result.error;
+
+    $("authMessage").textContent = authMode === "signup"
+      ? "Account request successful. Check your email if confirmation is enabled."
+      : "Login successful.";
+
+    await updateAuthUI();
+
+  } catch (error) {
+    $("authMessage").textContent = error.message || "Authentication failed.";
+  } finally {
+    $("authSubmit").disabled = false;
+  }
 });
 
-// Footer year
-document.getElementById("year").textContent = new Date().getFullYear();
+$("forgotPassword").addEventListener("click", async () => {
+  if (!supabaseClient) {
+    $("authMessage").textContent = "Configure Supabase first.";
+    return;
+  }
 
-// Initial rendering
+  const email = $("authEmail").value.trim();
+
+  if (!email) {
+    $("authMessage").textContent = "Enter your email address first.";
+    return;
+  }
+
+  const {error} = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin
+  });
+
+  $("authMessage").textContent = error
+    ? error.message
+    : "If the email is registered, a password reset link will be sent.";
+});
+
+$("logoutButton").addEventListener("click", async () => {
+  if (!supabaseClient) return;
+
+  const {error} = await supabaseClient.auth.signOut();
+
+  if (error) {
+    $("authMessage").textContent = error.message;
+    return;
+  }
+
+  $("authMessage").textContent = "You have logged out.";
+  setAuthMode("signup");
+  await updateAuthUI();
+});
+
+if (supabaseClient) {
+  supabaseClient.auth.onAuthStateChange(() => {
+    updateAuthUI();
+  });
+}
+
+// Initial setup
+$("year").textContent = new Date().getFullYear();
 renderProducts();
 renderCart();
