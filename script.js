@@ -422,10 +422,9 @@ $("forgotPassword").addEventListener("click", async () => {
     $("authMessage").textContent = "Enter your email address first.";
     return;
   }
-
-  const {error} = await supabaseClient.auth.resetPasswordForEmail(email, {
-    redirectTo: window.location.origin
-  });
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+  redirectTo: "https://dhanavarshamaddamsetti-byte.github.io/siri-silks-demo/"
+});
 
   $("authMessage").textContent = error
     ? error.message
