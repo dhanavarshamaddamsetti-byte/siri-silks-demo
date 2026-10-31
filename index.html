@@ -1,82 +1,183 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Discover the beauty of Indian silk sarees at Siri Silks. Explore elegant traditional collections.">
-  <title>Siri Silks | The Beauty of Tradition</title>
+  <meta name="description" content="Discover timeless Indian sarees at Siri Silks. Explore silk, Kanchipuram, organza and festive collections.">
+  <meta name="theme-color" content="#542b25">
+  <title>Siri Silks | Timeless Indian Sarees</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="announcement">A celebration of Indian tradition · Thoughtfully curated sarees</div>
 
-<header class="navbar">
-  <a href="#" class="logo">SIRI <span>SILKS</span></a>
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#collections">Collections</a>
-    <a href="#story">Our Story</a>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="Siri Silks home">
+      <span class="brand-mark">S</span>
+      <span class="brand-name">SIRI <b>SILKS</b><small>TIMELESS TRADITION</small></span>
+    </a>
+
+    <form class="search-bar" id="searchForm" role="search">
+      <label class="sr-only" for="searchInput">Search sarees</label>
+      <input id="searchInput" type="search" placeholder="Search for sarees, fabrics, colours..." autocomplete="off">
+      <button type="submit" aria-label="Search">⌕</button>
+    </form>
+
+    <div class="header-actions">
+      <button class="text-action" id="wishlistToggle" type="button">♡ <span>Wishlist</span></button>
+      <button class="bag-action" id="cartToggle" type="button">Bag <span id="cartCount">0</span></button>
+    </div>
+  </header>
+
+  <nav class="main-nav" aria-label="Main navigation">
+    <a href="#shop">Shop all</a>
+    <a href="#shop" data-nav-category="Kanchipuram Silk">Kanchipuram</a>
+    <a href="#shop" data-nav-category="Soft Silk">Soft silk</a>
+    <a href="#shop" data-nav-category="Organza">Organza</a>
+    <a href="#shop" data-nav-category="Tussar">Tussar</a>
+    <a href="#story">Our story</a>
     <a href="#contact">Contact</a>
   </nav>
-  <a class="nav-button" href="#contact">Enquire Now</a>
-</header>
 
-<main>
-<section class="hero" id="home">
-  <div class="hero-content">
-    <p class="eyebrow">A LEGACY OF ELEGANCE</p>
-    <h1>Timeless Silk.<br><em>Beautiful Traditions.</em></h1>
-    <p>Celebrate life's special moments with the beauty and grace of Indian silk sarees.</p>
-    <a href="#collections" class="primary-button">Explore Collections</a>
-  </div>
-  <div class="hero-image">
-    <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=1000"
-         alt="Traditional Indian saree">
-  </div>
-</section>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">THE ART OF INDIAN DRAPING</p>
+        <h1>Every weave tells<br><em>a beautiful story.</em></h1>
+        <p>Discover sarees that bring together timeless craftsmanship, colour and celebration.</p>
+        <a class="button button-light" href="#shop">Explore the collection <span>→</span></a>
+        <div class="hero-note"><span>✦</span> A demo storefront concept for Siri Silks</div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-image-frame">
+          <img src="images/hero-saree.jpg" alt="Saree collection hero image" onerror="this.style.display='none';this.parentElement.classList.add('image-placeholder')">
+          <span class="image-hint">Add your hero image<br><small>images/hero-saree.jpg</small></span>
+        </div>
+        <div class="hero-stamp">SIRI<br><b>SILKS</b><small>EST. HERITAGE</small></div>
+      </div>
+    </section>
 
-<section class="intro" id="story">
-  <p class="eyebrow">THE SIRI SILKS EXPERIENCE</p>
-  <h2>Tradition woven with love.</h2>
-  <p>Discover the artistry, colours and craftsmanship of Indian sarees.
-  Every occasion deserves something beautiful.</p>
-</section>
+    <section class="trust-strip" aria-label="Store highlights">
+      <div><span>✧</span><p><b>Curated collections</b><small>Styles for every occasion</small></p></div>
+      <div><span>✧</span><p><b>Personal assistance</b><small>Enquire directly with us</small></p></div>
+      <div><span>✧</span><p><b>Made for celebrations</b><small>Tradition in every drape</small></p></div>
+    </section>
 
-<section class="collections" id="collections">
-  <p class="eyebrow">EXPLORE OUR SELECTION</p>
-  <h2> Discover Our Collections</h2>
-  <p class="catalogue-note">Demo catalogue — sample products and prices</p>
+    <section class="category-section" id="shop">
+      <div class="section-heading">
+        <div><p class="eyebrow">FIND YOUR FAVOURITE</p><h2>Shop by category</h2></div>
+        <a href="#productArea" class="subtle-link">View all products →</a>
+      </div>
+      <div class="category-tiles" id="categoryTiles">
+        <button class="category-tile active" data-category="All">
+          <span class="category-symbol">✺</span><b>All sarees</b><small>Explore everything</small>
+        </button>
+        <button class="category-tile" data-category="Kanchipuram Silk">
+          <span class="category-symbol">✧</span><b>Kanchipuram</b><small>Classic silk</small>
+        </button>
+        <button class="category-tile" data-category="Soft Silk">
+          <span class="category-symbol">❋</span><b>Soft silk</b><small>Everyday elegance</small>
+        </button>
+        <button class="category-tile" data-category="Organza">
+          <span class="category-symbol">❀</span><b>Organza</b><small>Light & graceful</small>
+        </button>
+        <button class="category-tile" data-category="Tussar">
+          <span class="category-symbol">✿</span><b>Tussar</b><small>Natural texture</small>
+        </button>
+        <button class="category-tile" data-category="Festive">
+          <span class="category-symbol">✦</span><b>Festive edit</b><small>Special occasions</small>
+        </button>
+      </div>
+    </section>
 
-  <div class="catalogue-controls">
-    <input type="search" id="productSearch"
-      placeholder="Search sarees..." aria-label="Search sarees">
+    <section class="product-section" id="productArea">
+      <div class="section-heading product-heading">
+        <div><p class="eyebrow">THE SIRI SILKS EDIT</p><h2>Explore our sarees</h2><p class="section-description">Browse the demo collection. Product details and prices are illustrative until confirmed by the store.</p></div>
+        <label class="sort-control">Sort by
+          <select id="sortSelect">
+            <option value="featured">Featured</option>
+            <option value="price-low">Price: low to high</option>
+            <option value="price-high">Price: high to low</option>
+            <option value="name">Name: A to Z</option>
+          </select>
+        </label>
+      </div>
 
-    <select id="categoryFilter" aria-label="Filter by category">
-      <option value="all">All Collections</option>
-      <option value="Kanchipuram">Kanchipuram</option>
-      <option value="Organza">Organza</option>
-      <option value="Tussar">Tussar</option>
-    </select>
-  </div>
+      <div class="shop-layout">
+        <aside class="filters">
+          <div class="filter-title"><b>Refine your search</b><button id="clearFilters" type="button">Clear all</button></div>
+          <div class="filter-group">
+            <h3>Categories</h3>
+            <label><input type="checkbox" name="category" value="Kanchipuram Silk"> Kanchipuram silk</label>
+            <label><input type="checkbox" name="category" value="Soft Silk"> Soft silk</label>
+            <label><input type="checkbox" name="category" value="Organza"> Organza</label>
+            <label><input type="checkbox" name="category" value="Tussar"> Tussar</label>
+            <label><input type="checkbox" name="category" value="Festive"> Festive</label>
+          </div>
+          <div class="filter-group">
+            <h3>Colour</h3>
+            <label><input type="checkbox" name="colour" value="Red"> Red</label>
+            <label><input type="checkbox" name="colour" value="Green"> Green</label>
+            <label><input type="checkbox" name="colour" value="Blue"> Blue</label>
+            <label><input type="checkbox" name="colour" value="Gold"> Gold</label>
+            <label><input type="checkbox" name="colour" value="Pink"> Pink</label>
+          </div>
+          <div class="filter-group">
+            <h3>Price range</h3>
+            <label><input type="radio" name="price" value="all" checked> All prices</label>
+            <label><input type="radio" name="price" value="under3000"> Under ₹3,000</label>
+            <label><input type="radio" name="price" value="3000to6000"> ₹3,000–₹6,000</label>
+            <label><input type="radio" name="price" value="above6000"> Above ₹6,000</label>
+          </div>
+        </aside>
 
-  <div class="collection-grid" id="productGrid"></div>
-  <p id="noProducts" hidden>No matching sarees found.</p>
-</section>
+        <div class="products-area">
+          <div class="results-bar"><span id="resultCount">Showing demo products</span><span class="demo-label">DEMO CATALOGUE</span></div>
+          <div class="product-grid" id="productGrid" aria-live="polite"></div>
+          <div class="empty-state" id="emptyState" hidden>
+            <span>⌕</span><h3>No sarees found</h3><p>Try another search or clear your filters.</p>
+            <button class="button button-dark" id="emptyClear" type="button">Clear filters</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<section class="contact" id="contact">
-  <p class="eyebrow">LET'S CONNECT</p>
-  <h2>Find your perfect saree.</h2>
-  <p>Have a question about a collection? Send us an enquiry.</p>
-  <a class="primary-button" href="https://wa.me/917569221743?text=Hello%20Siri%20Silks%2C%20I%20would%20like%20to%20know%20about%20your%20collections." target="_blank" rel="noopener">Chat on WhatsApp</a>
-  <p class="demo-note">DEMO WEBSITE · Sample content and contact details</p>
-</section>
-</main>
+    <section class="story-section" id="story">
+      <div class="story-image">
+        <img src="images/story-saree.jpg" alt="Siri Silks brand story image" onerror="this.style.display='none';this.parentElement.classList.add('image-placeholder')">
+        <span class="image-hint">Add story image<br><small>images/story-saree.jpg</small></span>
+      </div>
+      <div class="story-copy">
+        <p class="eyebrow">A LEGACY OF ELEGANCE</p>
+        <h2>Rooted in tradition.<br><em>Chosen for today.</em></h2>
+        <p>At Siri Silks, every saree is an invitation to celebrate the moments that matter. Discover a thoughtful selection of Indian sarees for weddings, festivals and everyday beauty.</p>
+        <a class="subtle-link" href="#contact">Talk to our team →</a>
+        <p class="demo-disclaimer">Brand story shown here is draft demo copy. The store owner should approve the final heritage and business claims.</p>
+      </div>
+    </section>
 
-<footer>
-  <p>SIRI SILKS · A Celebration of Indian Tradition</p>
-  <p>Independent website concept created for demonstration purposes.</p>
-</footer>
+    <section class="contact-section" id="contact">
+      <p class="eyebrow">PERSONAL SHOPPING ASSISTANCE</p>
+      <h2>Need help choosing?</h2>
+      <p>Ask about a saree, colour, availability or an upcoming occasion.</p>
+      <a class="button button-dark" id="mainWhatsapp" href="#" target="_blank" rel="noopener">Chat with Siri Silks on WhatsApp</a>
+      <small>Demo contact link — replace with the business-approved WhatsApp number before presenting.</small>
+    </section>
+  </main>
 
-<script src="script.js"></script>
+  <footer class="footer">
+    <a class="brand footer-brand" href="#"><span class="brand-mark">S</span><span class="brand-name">SIRI <b>SILKS</b><small>TIMELESS TRADITION</small></span></a>
+    <p>A demo storefront concept. Sample products, prices and images are not official store listings.</p>
+    <span>© <span id="year"></span> Siri Silks · Demo concept</span>
+  </footer>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping bag" aria-hidden="true">
+    <div class="drawer-header"><h2>Your bag</h2><button id="closeCart" aria-label="Close bag">×</button></div>
+    <div id="cartItems" class="cart-items"><p class="cart-empty">Your bag is empty.</p></div>
+    <div class="drawer-footer"><p class="cart-total">Estimated total <b id="cartTotal">₹0</b></p><p class="cart-note">Demo only. No payment is collected.</p><button id="whatsappOrder" class="button button-dark full-width" type="button">Enquire about bag on WhatsApp</button></div>
+  </aside>
+
+  <script src="script.js"></script>
 </body>
 </html>
