@@ -6,7 +6,7 @@
 // Use the Project URL and publishable/anon key only.
 // NEVER use the service_role or secret key in this file.
 
-const SUPABASE_URL = "https://ahupaxdwlxhjgvogfbcd.supabase.co/rest/v1/";
+const SUPABASE_URL = "https://ahupaxdwlxhjgvogfbcd.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_uBmd8g2nJ1QZH3vTPAUfag_zeXb5O-u";
 
 // Add only the Siri Silks owner-approved WhatsApp number.
