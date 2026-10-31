@@ -44,27 +44,23 @@
 
 <section class="collections" id="collections">
   <p class="eyebrow">EXPLORE OUR SELECTION</p>
-  <h2>Our Collections</h2>
-  <div class="collection-grid">
-    <article class="collection-card">
-      <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=700" alt="Silk saree">
-      <h3>Kanchipuram Silks</h3>
-      <p>Classic elegance for special occasions.</p>
-      <a href="#contact">Enquire now →</a>
-    </article>
-    <article class="collection-card">
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEvqu2tzNlkqWBN6CO6_JvQr4zmFR0ztz9RZdnjRP9EQ&s=10">
-      <h3>Soft Silks</h3>
-      <p>Graceful styles for every celebration.</p>
-      <a href="#contact">Enquire now →</a>
-    </article>
-    <article class="collection-card">
-      <img src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=700" alt="Indian ethnic wear">
-      <h3>Designer Sarees</h3>
-      <p>Beautiful styles for memorable moments.</p>
-      <a href="#contact">Enquire now →</a>
-    </article>
+  <h2> Discover Our Collections</h2>
+  <p class="catalogue-note">Demo catalogue — sample products and prices</p>
+
+  <div class="catalogue-controls">
+    <input type="search" id="productSearch"
+      placeholder="Search sarees..." aria-label="Search sarees">
+
+    <select id="categoryFilter" aria-label="Filter by category">
+      <option value="all">All Collections</option>
+      <option value="Kanchipuram">Kanchipuram</option>
+      <option value="Organza">Organza</option>
+      <option value="Tussar">Tussar</option>
+    </select>
   </div>
+
+  <div class="collection-grid" id="productGrid"></div>
+  <p id="noProducts" hidden>No matching sarees found.</p>
 </section>
 
 <section class="contact" id="contact">
